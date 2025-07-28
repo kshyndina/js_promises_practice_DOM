@@ -5,10 +5,15 @@ const html = document.documentElement;
 const promise1 = new Promise((resolve, reject) => {
   let clickLog = 0;
 
-  html.addEventListener('click', () => {
+  const prF = () => {
     clickLog++;
-    resolve('First promise was resolved');
-  });
+
+    if (clickLog === 1) {
+      resolve('First promise was resolved');
+    }
+  };
+
+  html.addEventListener('click', prF);
 
   setTimeout(() => {
     if (clickLog === 0) {
@@ -18,36 +23,51 @@ const promise1 = new Promise((resolve, reject) => {
 });
 
 const promise2 = new Promise((resolve, reject) => {
-  html.addEventListener('click', () => {
-    resolve('Second promise was resolved');
-  });
+  let clickLog = 0;
 
-  html.addEventListener('contextmenu', (eve) => {
-    eve.preventDefault();
-    resolve('Second promise was resolved');
-  });
+  const prF = () => {
+    clickLog++;
+
+    if (clickLog === 1) {
+      resolve('Second promise was resolved');
+    }
+  };
+
+  html.addEventListener('click', prF);
+  html.addEventListener('contextmenu', prF);
 });
 
 const promise3 = new Promise((resolve, reject) => {
   let clickLogL = 0;
   let clickLogR = 0;
 
-  html.addEventListener('click', () => {
-    clickLogL++;
-
-    if (clickLogL > 0 && clickLogR > 0) {
-      resolve('Third promise was resolved');
-    }
-  });
-
-  html.addEventListener('contextmenu', (eve) => {
-    eve.preventDefault();
+  const prFR = (ev) => {
+    ev.preventDefault();
     clickLogR++;
 
-    if (clickLogL > 0 && clickLogR > 0) {
+    if (
+      clickLogL > 0 &&
+      clickLogR > 0 &&
+      (clickLogL === 1 || clickLogR === 1)
+    ) {
       resolve('Third promise was resolved');
     }
-  });
+  };
+
+  const prFL = () => {
+    clickLogL++;
+
+    if (
+      clickLogL > 0 &&
+      clickLogR > 0 &&
+      (clickLogL === 1 || clickLogR === 1)
+    ) {
+      resolve('Third promise was resolved');
+    }
+  };
+
+  html.addEventListener('click', prFL);
+  html.addEventListener('contextmenu', prFR);
 });
 
 promise1
